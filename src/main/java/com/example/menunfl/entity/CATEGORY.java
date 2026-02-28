@@ -1,6 +1,6 @@
 package com.example.menunfl.entity;
 
-public enum CATEGORY_STOCK {
+public enum CATEGORY {
     MEAT,
     BREAD,
     DAIRY,
