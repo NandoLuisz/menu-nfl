@@ -12,4 +12,5 @@ public enum CATEGORY {
     PACKAGING,
     FRYING,
     CLEANING,
+    DEFAULT
 }

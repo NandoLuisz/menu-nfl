@@ -1,5 +1,6 @@
 package com.example.menunfl.infra;
 
+import com.example.menunfl.entity.CATEGORY;
 import com.example.menunfl.entity.product.Product;
 import com.example.menunfl.repository.ProductRepository;
 import jakarta.transaction.Transactional;
@@ -28,6 +29,7 @@ public class ProductInitializer implements CommandLineRunner {
             product.setImage("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQmiqR_gB1aE6SmGpJvgdi6j6MZYtLpcSittA&s");
             product.setActive(true);
             product.setStock(10);
+            product.setCategory(CATEGORY.DEFAULT);
 
             productRepository.save(product);
 

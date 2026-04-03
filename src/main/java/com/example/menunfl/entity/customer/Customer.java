@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "customers")
+@Table(name = "customers_tb")
 @Getter
 @Setter
 @NoArgsConstructor
