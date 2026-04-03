@@ -6,6 +6,9 @@ import com.example.menunfl.entity.product.Product;
 import com.example.menunfl.repository.ProductRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Service
 public class ProductService {
 
@@ -41,6 +44,15 @@ public class ProductService {
         productRepository.save(product);
     }
 
+    public List<ProductResponseDto> getAllProducts() {
+        List<Product> products = productRepository.findAll();
+        List<ProductResponseDto> productResponseDtos = new ArrayList<>();
+        for (Product product : products) {
+            productResponseDtos.add(ProductResponseDto.fromEntity(product));
+        }
+        return productResponseDtos;
+    }
+
     private Product toEntity(ProductRequestDto data) {
         Product product = new Product();
         product.setName(data.name());
@@ -61,5 +73,13 @@ public class ProductService {
             throw new RuntimeException("product not found");
         }
         return product.get().getImage();
+    }
+
+    public void deleteProduct(Product product) {
+        var productFromDb = productRepository.findById(product.getId()).orElse(null);
+        if (productFromDb == null) {
+            throw new RuntimeException("product not found");
+        }
+        productRepository.delete(productFromDb);
     }
 }

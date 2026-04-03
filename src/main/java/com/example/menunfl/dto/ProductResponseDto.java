@@ -1,8 +1,7 @@
 package com.example.menunfl.dto;
 
-import com.example.menunfl.entity.CATEGORY;
+import com.example.menunfl.entity.enums.CATEGORY;
 import com.example.menunfl.entity.product.Product;
-import com.example.menunfl.service.ProductService;
 
 import java.math.BigDecimal;
 

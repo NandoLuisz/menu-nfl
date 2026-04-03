@@ -1,4 +1,4 @@
-package com.example.menunfl.entity;
+package com.example.menunfl.entity.enums;
 
 public enum CATEGORY {
     MEAT,

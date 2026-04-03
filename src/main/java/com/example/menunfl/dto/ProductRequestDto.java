@@ -1,6 +1,6 @@
 package com.example.menunfl.dto;
 
-import com.example.menunfl.entity.CATEGORY;
+import com.example.menunfl.entity.enums.CATEGORY;
 
 import java.math.BigDecimal;
 

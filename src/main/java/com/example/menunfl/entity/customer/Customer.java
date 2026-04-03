@@ -1,5 +1,6 @@
 package com.example.menunfl.entity.customer;
 
+import com.example.menunfl.entity.enums.CUSTOMER_ROLE;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -9,9 +10,14 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collection;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -20,7 +26,7 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Customer {
+public class Customer implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -49,8 +55,13 @@ public class Customer {
     @Column(nullable = false)
     private Boolean active = true;
 
+    private CUSTOMER_ROLE customerRole;
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+
+    public Customer(String name, String email, String encryptedPassword, CUSTOMER_ROLE customerRole) {
+    }
 
     @PrePersist
     public void prePersist() {
@@ -62,5 +73,16 @@ public class Customer {
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        if(this.customerRole == CUSTOMER_ROLE.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
+        else return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    @Override
+    public String getUsername() {
+        return "";
     }
 }

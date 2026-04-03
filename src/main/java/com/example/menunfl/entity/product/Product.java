@@ -1,6 +1,6 @@
 package com.example.menunfl.entity.product;
 
-import com.example.menunfl.entity.CATEGORY;
+import com.example.menunfl.entity.enums.CATEGORY;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

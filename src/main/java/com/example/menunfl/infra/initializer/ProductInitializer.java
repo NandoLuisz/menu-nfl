@@ -1,6 +1,6 @@
-package com.example.menunfl.infra;
+package com.example.menunfl.infra.initializer;
 
-import com.example.menunfl.entity.CATEGORY;
+import com.example.menunfl.entity.enums.CATEGORY;
 import com.example.menunfl.entity.product.Product;
 import com.example.menunfl.repository.ProductRepository;
 import jakarta.transaction.Transactional;
@@ -33,7 +33,7 @@ public class ProductInitializer implements CommandLineRunner {
 
             productRepository.save(product);
 
-            System.out.println("Produto padrão criado!");
+            System.out.println("Standard product created!");
         }
     }
 }

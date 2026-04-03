@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/menu/product")
+@RequestMapping("api/product")
 public class ProductController {
 
     private final ProductService  productService;
@@ -28,19 +28,20 @@ public class ProductController {
     }
 
     @GetMapping
-    public ResponseEntity<List<Product>> getAll() {
-        return null;
+    public ResponseEntity<List<ProductResponseDto>> getAll() {
+        return ResponseEntity.ok().body(productService.getAllProducts());
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(@PathVariable Long id, @RequestBody Product product) {
+    public ResponseEntity<String> update(@PathVariable Long id, @RequestBody Product product) {
         productService.updateProduct(product);
-        return ResponseEntity.status(HttpStatus.OK).build();
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Product successfully updated.");
     }
 
     @DeleteMapping
-    public ResponseEntity<Product> delete(@RequestBody Product product) {
-        return null;
+    public ResponseEntity<String> delete(@RequestBody Product product) {
+        productService.deleteProduct(product);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Product successfully deleted.");
     }
 }
 
