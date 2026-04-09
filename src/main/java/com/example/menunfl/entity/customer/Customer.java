@@ -1,5 +1,6 @@
 package com.example.menunfl.entity.customer;
 
+import com.example.menunfl.entity.address.Address;
 import com.example.menunfl.entity.enums.CUSTOMER_ROLE;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
@@ -16,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -56,6 +58,9 @@ public class Customer implements UserDetails {
     private Boolean active = true;
 
     private CUSTOMER_ROLE customerRole;
+
+    @OneToMany(mappedBy = "customer",  cascade = CascadeType.ALL,  orphanRemoval = true)
+    private List<Address> addresses = new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

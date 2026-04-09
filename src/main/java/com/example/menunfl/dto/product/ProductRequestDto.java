@@ -1,4 +1,4 @@
-package com.example.menunfl.dto;
+package com.example.menunfl.dto.product;
 
 import com.example.menunfl.entity.enums.CATEGORY;
 

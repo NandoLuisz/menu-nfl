@@ -35,7 +35,7 @@ public class AuthenticationController {
     public ResponseEntity<LoginResponseDto> loginUser(@RequestBody LoginDto data){
         var customer = customerRepository.findByName(data.name());
         if(customer == null) {
-            throw new RuntimeException("Usuário não cadastrado.");
+            throw new RuntimeException("Customer not found");
         }
 
         Customer customerExist = customerRepository.getCustomerByName(customer.getUsername());
@@ -47,7 +47,7 @@ public class AuthenticationController {
             var token = tokenService.generateToken((Customer) auth.getPrincipal());
             return ResponseEntity.ok(new LoginResponseDto(token, id, data.name()));
         } catch (Exception error) {
-            throw new RuntimeException("Senha incorreta.");
+            throw new RuntimeException("Password Incorrect Format");
         }
     }
 

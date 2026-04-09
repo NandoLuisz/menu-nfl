@@ -1,7 +1,7 @@
 package com.example.menunfl.service;
 
-import com.example.menunfl.dto.ProductRequestDto;
-import com.example.menunfl.dto.ProductResponseDto;
+import com.example.menunfl.dto.product.ProductRequestDto;
+import com.example.menunfl.dto.product.ProductResponseDto;
 import com.example.menunfl.entity.product.Product;
 import com.example.menunfl.repository.ProductRepository;
 import org.springframework.stereotype.Service;
