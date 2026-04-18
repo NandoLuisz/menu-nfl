@@ -12,5 +12,6 @@ public enum CATEGORY {
     PACKAGING,
     FRYING,
     CLEANING,
+    FAST_FOOD,
     DEFAULT
 }

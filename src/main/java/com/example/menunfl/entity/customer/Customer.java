@@ -3,6 +3,7 @@ package com.example.menunfl.entity.customer;
 import com.example.menunfl.entity.address.Address;
 import com.example.menunfl.entity.enums.CUSTOMER_ROLE;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -57,15 +58,25 @@ public class Customer implements UserDetails {
     @Column(nullable = false)
     private Boolean active = true;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private CUSTOMER_ROLE customerRole;
 
+    @JsonManagedReference
     @OneToMany(mappedBy = "customer",  cascade = CascadeType.ALL,  orphanRemoval = true)
     private List<Address> addresses = new ArrayList<>();
 
+    @Column(updatable = false)
     private LocalDateTime createdAt;
+
     private LocalDateTime updatedAt;
 
-    public Customer(String name, String email, String encryptedPassword, CUSTOMER_ROLE customerRole) {
+    public Customer(String name, String email, String phone, String encryptedPassword, CUSTOMER_ROLE customerRole) {
+        this.name = name;
+        this.email = email;
+        this.phone = phone;
+        this.password = encryptedPassword;
+        this.customerRole = customerRole;
     }
 
     @PrePersist
@@ -80,6 +91,11 @@ public class Customer implements UserDetails {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public void addAddress(Address address) {
+        address.setCustomer(this);
+        this.addresses.add(address);
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         if(this.customerRole == CUSTOMER_ROLE.ADMIN) return List.of(new SimpleGrantedAuthority("ROLE_ADMIN"), new SimpleGrantedAuthority("ROLE_USER"));
@@ -88,6 +104,6 @@ public class Customer implements UserDetails {
 
     @Override
     public String getUsername() {
-        return "";
+        return this.email;
     }
 }

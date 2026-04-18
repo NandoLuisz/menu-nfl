@@ -1,4 +1,4 @@
-package com.example.menunfl.entity.authentication;
+package com.example.menunfl.dto.authentication;
 
 import java.util.UUID;
 

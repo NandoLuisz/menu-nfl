@@ -12,6 +12,11 @@ public record CustomerResponseDto(
         LocalDate birthday,
         CUSTOMER_ROLE role
 ) {
+
+    public CustomerResponseDto(Customer customer) {
+        this(customer.getName(), customer.getEmail(), customer.getPhone(), customer.getBirthday(), customer.getCustomerRole());
+    }
+
     public static CustomerResponseDto fromEntity(Customer data) {
         return new CustomerResponseDto(
                 data.getName(),

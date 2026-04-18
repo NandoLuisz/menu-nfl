@@ -31,16 +31,16 @@ public class ProductService {
         return ProductResponseDto.fromEntity(saved);
     }
 
-    public void updateProduct(Product data) {
-        var product = productRepository.findById(data.getId()).orElse(null);
+    public void updateProduct(Long id, ProductRequestDto data) {
+        var product = productRepository.findById(id).orElse(null);
         if (product == null) {
             throw new RuntimeException("Product not found.");
         }
-        product.setName(data.getName());
-        product.setDescription(data.getDescription());
-        product.setPrice(data.getPrice());
-        product.setCategory(data.getCategory());
-        product.setImage(data.getImage());
+        product.setName(data.name());
+        product.setDescription(data.description());
+        product.setPrice(data.price());
+        product.setCategory(data.category());
+        product.setImage(data.image());
         productRepository.save(product);
     }
 
@@ -75,11 +75,16 @@ public class ProductService {
         return product.get().getImage();
     }
 
-    public void deleteProduct(Product product) {
-        var productFromDb = productRepository.findById(product.getId()).orElse(null);
+    public void deleteProduct(Long idProduct) {
+        var productFromDb = productRepository.findById(idProduct).orElse(null);
         if (productFromDb == null) {
             throw new RuntimeException("product not found");
         }
         productRepository.delete(productFromDb);
     }
+
+    public Product getProduct(Long productId) {
+        return productRepository.findById(productId).orElseThrow(() -> new RuntimeException("Product not found with id: " + productId));
+    }
+
 }

@@ -1,6 +1,7 @@
 package com.example.menunfl.entity.address;
 
 import com.example.menunfl.entity.customer.Customer;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -49,14 +50,17 @@ public class Address {
     @Column(nullable = false, length = 10)
     private String zip;
 
+    @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
     @Column(nullable = false)
-    private Boolean isDefault = false;
+    private Boolean isDefault;
 
+    @Column(updatable = false)
     private LocalDateTime createdAt;
+
     private LocalDateTime updatedAt;
 
     private LocalDateTime deletedAt;
@@ -74,7 +78,7 @@ public class Address {
     }
 
     private void normalize() {
-        this.street = this.street.trim();
-        this.city = this.city.trim();
+        if (this.street != null) this.street = this.street.trim();
+        if (this.city != null) this.city = this.city.trim();
     }
 }

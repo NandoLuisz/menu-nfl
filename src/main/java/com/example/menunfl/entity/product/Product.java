@@ -52,7 +52,9 @@ public class Product {
     @Column(nullable = false)
     private Integer stock = 0;
 
+    @Column(updatable = false)
     private LocalDateTime createdAt;
+
     private LocalDateTime updatedAt;
 
     @PrePersist

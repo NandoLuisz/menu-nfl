@@ -1,4 +1,4 @@
 package com.example.menunfl.dto.order;
 
-public record OrderItemRequest() {
+public record OrderItemRequest(Long id, Integer quantity) {
 }

@@ -28,7 +28,15 @@ public class SecurityConfigurations {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html",
                                 "/swagger-resources/**", "/webjars/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/login-creator").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/product/add-product").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/product/list-all-products").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/api/product/update-product/{id}").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/api/product/delete-product/{id}").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/login-customer").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/auth/register-customer").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/customer/get-all-customers").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/api/customer/get-customer-by-id/{id}").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/api/customer/update-customer/{id}").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(secutiryFilter, UsernamePasswordAuthenticationFilter.class)

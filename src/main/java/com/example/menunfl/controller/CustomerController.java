@@ -21,7 +21,7 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
-    @GetMapping
+    @GetMapping("get-all-customers")
     public ResponseEntity<List<CustomerResponseDto>> getAllCustomers() {
         return ResponseEntity.ok(
                 customerService
@@ -31,13 +31,13 @@ public class CustomerController {
                         .toList());
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("get-customer-by-id/{id}")
     public ResponseEntity<CustomerResponseDto> getCustomerById(@PathVariable UUID id) {
         var customer = customerService.getCustomerById(id);
         return ResponseEntity.ok(CustomerResponseDto.fromEntity(customer));
     }
 
-    @PutMapping("{id}")
+    @PutMapping("update-customer/{id}")
     public ResponseEntity<CustomerResponseDto> updateCustomer(@PathVariable UUID id, @RequestBody CustomerRequestDto data) {
         var customer = customerService.getCustomerById(id);
         customer.setName(data.name());

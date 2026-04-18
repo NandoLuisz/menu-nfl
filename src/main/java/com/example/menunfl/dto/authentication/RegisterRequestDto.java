@@ -1,4 +1,4 @@
-package com.example.menunfl.entity.authentication;
+package com.example.menunfl.dto.authentication;
 
-public record RegisterRequestDto(String name, String email, String password) {
+public record RegisterRequestDto(String name, String email, String password, String phone) {
 }

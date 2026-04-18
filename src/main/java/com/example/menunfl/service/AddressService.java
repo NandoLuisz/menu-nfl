@@ -5,6 +5,8 @@ import com.example.menunfl.repository.AddressRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AddressService {
@@ -14,6 +16,9 @@ public class AddressService {
         this.addressRepository = addressRepository;
     }
 
+    public Optional<Address> getAddressById(Long addressId) {
+        return addressRepository.findById(addressId);
+    }
     public void saveNewAddress(Address address) {
         addressRepository.save(address);
     }

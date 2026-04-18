@@ -1,8 +1,9 @@
 package com.example.menunfl.controller;
 
-import com.example.menunfl.entity.authentication.LoginDto;
-import com.example.menunfl.entity.authentication.LoginResponseDto;
-import com.example.menunfl.entity.authentication.RegisterRequestDto;
+import com.example.menunfl.dto.authentication.CustomerResponseRegisterDto;
+import com.example.menunfl.dto.authentication.LoginDto;
+import com.example.menunfl.dto.authentication.LoginResponseDto;
+import com.example.menunfl.dto.authentication.RegisterRequestDto;
 import com.example.menunfl.entity.customer.Customer;
 import com.example.menunfl.entity.enums.CUSTOMER_ROLE;
 import com.example.menunfl.infra.security.TokenService;
@@ -25,10 +26,17 @@ import java.util.UUID;
 @RestController
 public class AuthenticationController {
 
-    private AuthenticationManager authenticationManager;
-    private CustomerRepository customerRepository;
-    private TokenService tokenService;
-    private CustomerService customerService;
+    private final AuthenticationManager authenticationManager;
+    private final CustomerRepository customerRepository;
+    private final TokenService tokenService;
+    private final CustomerService customerService;
+
+    public AuthenticationController(AuthenticationManager authenticationManager, CustomerRepository customerRepository, TokenService tokenService, CustomerService customerService) {
+        this.authenticationManager = authenticationManager;
+        this.customerRepository = customerRepository;
+        this.tokenService = tokenService;
+        this.customerService = customerService;
+    }
 
 
     @PostMapping("/login-customer")
@@ -52,26 +60,16 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register-customer")
-    public ResponseEntity<?> registerUser(@RequestBody RegisterRequestDto data) throws IOException {
-        if (customerRepository.findByName(data.name()) != null) {
-            return ResponseEntity.badRequest().body("Customer already registered.");
+    public ResponseEntity<CustomerResponseRegisterDto> registerUser(@RequestBody RegisterRequestDto data) throws IOException {
+        if (customerService.findCustomerByName(data.name())) {
+            throw new RuntimeException("Customer already registered.");
+        }
+        if (customerService.findCustomerByEmail(data.name())) {
+            throw new RuntimeException("Email already registered.");
         }
 
-        if (customerRepository.existsByEmail(data.email())) {
-            return ResponseEntity.badRequest().body("Email already registered.");
-        }
+        Customer response = customerService.registerCustomer(data);
 
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-        String encryptedPassword = passwordEncoder.encode(data.password());
-
-        Customer newCustomer = new Customer(
-                data.name(),
-                data.email(),
-                encryptedPassword,
-                CUSTOMER_ROLE.CUSTOMER);
-
-        customerRepository.save(newCustomer);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(newCustomer);
+        return ResponseEntity.status(HttpStatus.CREATED).body(CustomerResponseRegisterDto.from(response));
     }
 }

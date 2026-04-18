@@ -21,26 +21,26 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping
-    public ResponseEntity<ProductResponseDto> save(@RequestBody @Valid ProductRequestDto product) {
+    @PostMapping("add-product")
+    public ResponseEntity<ProductResponseDto> addProduct(@RequestBody ProductRequestDto product) {
         ProductResponseDto response = productService.createProduct(product);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping
+    @GetMapping("list-all-products")
     public ResponseEntity<List<ProductResponseDto>> getAll() {
         return ResponseEntity.ok().body(productService.getAllProducts());
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<String> update(@PathVariable Long id, @RequestBody Product product) {
-        productService.updateProduct(product);
+    @PutMapping("update-product/{id}")
+    public ResponseEntity<String> update(@PathVariable Long id, @RequestBody ProductRequestDto product) {
+        productService.updateProduct(id, product);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Product successfully updated.");
     }
 
-    @DeleteMapping
-    public ResponseEntity<String> delete(@RequestBody Product product) {
-        productService.deleteProduct(product);
+    @DeleteMapping("delete-product/{id}")
+    public ResponseEntity<String> delete(@PathVariable Long id) {
+        productService.deleteProduct(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Product successfully deleted.");
     }
 }

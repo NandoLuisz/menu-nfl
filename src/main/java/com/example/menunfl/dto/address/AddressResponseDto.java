@@ -2,6 +2,7 @@ package com.example.menunfl.dto.address;
 
 import com.example.menunfl.entity.address.Address;
 import com.example.menunfl.entity.address.STATES;
+import jakarta.validation.constraints.NotBlank;
 
 public record AddressResponseDto(
         String number,

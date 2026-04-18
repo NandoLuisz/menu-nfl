@@ -16,4 +16,6 @@ public interface CustomerRepository extends JpaRepository<Customer, UUID> {
     boolean existsByName(String name);
 
     Customer getCustomerByName(String username);
+
+    Customer existsByname(String name);
 }
