@@ -36,10 +36,6 @@ public class Address {
 
     @NotBlank
     @Column(nullable = false)
-    private String neighborhood;
-
-    @NotBlank
-    @Column(nullable = false)
     private String city;
 
     @Enumerated(EnumType.STRING)
@@ -56,7 +52,7 @@ public class Address {
     private Customer customer;
 
     @Column(nullable = false)
-    private Boolean isDefault;
+    private Boolean isDefault = true;
 
     @Column(updatable = false)
     private LocalDateTime createdAt;

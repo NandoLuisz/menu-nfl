@@ -3,6 +3,7 @@ package com.example.menunfl.controller;
 import com.example.menunfl.dto.address.AddressRequestDto;
 import com.example.menunfl.dto.address.AddressResponseDto;
 import com.example.menunfl.entity.address.Address;
+import com.example.menunfl.entity.address.STATES;
 import com.example.menunfl.entity.customer.Customer;
 import com.example.menunfl.service.AddressService;
 import com.example.menunfl.service.CustomerService;
@@ -23,25 +24,20 @@ public class AddressController {
         this.customerService = customerService;
     }
 
-    @PostMapping
+    @PostMapping("add-address")
     public ResponseEntity<AddressResponseDto> addAddress(@RequestBody AddressRequestDto data) {
-        Customer customer = customerService.getCustomerById(data.idCustomer());
+        Customer customer = customerService.getCustomerByEmail(data.customerEmail());
         Address newAddress = new Address();
         newAddress.setNumber(data.number());
         newAddress.setStreet(data.street());
         newAddress.setCity(data.city());
-        newAddress.setState(data.states());
+        newAddress.setState(STATES.valueOf(String.valueOf(data.state())));
         newAddress.setZip(data.zip());
-        newAddress.setNeighborhood(data.neighborhood());
         newAddress.setComplement(data.complement());
         customer.getAddresses().add(newAddress);
+        newAddress.setCustomer(customer);
+        customerService.saveCustomer(customer);
         addressService.saveNewAddress(newAddress);
         return ResponseEntity.ok(AddressResponseDto.fromEntity(newAddress));
-    }
-
-    @GetMapping
-    public ResponseEntity<List<AddressResponseDto>> getAllAddresses(@RequestBody UUID idCustomer) {
-        var list = addressService.findAllAddresses().stream().map(AddressResponseDto::fromEntity).toList();
-        return ResponseEntity.ok(list);
     }
 }

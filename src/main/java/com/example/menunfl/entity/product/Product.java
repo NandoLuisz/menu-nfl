@@ -68,7 +68,10 @@ public class Product {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void decreaseStock(int amount) {
+    public void decreaseStock(int amount, CATEGORY category) {
+        if(category == CATEGORY.DRINK || category == CATEGORY.FAST_FOOD) {
+            return;
+        }
         if (this.stock < amount) {
             throw new IllegalArgumentException("Estoque insuficiente");
         }

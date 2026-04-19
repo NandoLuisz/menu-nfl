@@ -26,4 +26,8 @@ public class AddressService {
     public List<Address> findAllAddresses() {
         return addressRepository.findAll();
     }
+
+    public List<Address> getAllAddressesById(UUID customerId) {
+        return addressRepository.findAllByCustomer_Id(customerId);
+    }
 }

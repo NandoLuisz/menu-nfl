@@ -36,20 +36,16 @@ public class OrderController {
 
     @PostMapping("place-order")
     public ResponseEntity<OrderResponseDto> placeOrder(@RequestBody OrderRequestDto data) {
-        Customer customer = customerService.getCustomerById(data.customerId());
+        Customer customer = customerService.getCustomerByEmail(data.customerEmail());
 
-        Optional<Address> address = addressService.getAddressById(data.addressId());
-
-        if(address.isEmpty()) {
-            throw new RuntimeException("Address not found!");
-        }
+        Address address = addressService.getAllAddressesById(customer.getId()).getFirst();
 
         Order order = new Order();
         order.setCustomer(customer);
-        order.setAddress(address.get());
+        order.setAddress(address);
 
         for(var itemDto : data.orderItemsList()){
-            Product product = productService.getProduct(itemDto.id());
+            Product product = productService.getProduct(itemDto.productId());
 
             OrderItem orderItem = new OrderItem();
             orderItem.setProduct(product);
@@ -58,7 +54,7 @@ public class OrderController {
 
             order.addItem(orderItem);
 
-            product.decreaseStock(itemDto.quantity());
+            product.decreaseStock(itemDto.quantity(), product.getCategory());
         }
 
         order.calculateTotal();

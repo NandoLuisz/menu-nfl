@@ -39,6 +39,10 @@ public class CustomerService {
         return customerRepository.existsByEmail(email);
     }
 
+    public Customer getCustomerByEmail(String email) {
+        return customerRepository.findByEmail(email);
+    }
+
     public Customer registerCustomer(RegisterRequestDto data) {
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         String encryptedPassword = passwordEncoder.encode(data.password());

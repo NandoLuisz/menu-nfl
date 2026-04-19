@@ -3,14 +3,15 @@ package com.example.menunfl.dto.order;
 import com.example.menunfl.dto.address.AddressResponseDto;
 import com.example.menunfl.dto.customer.CustomerResponseDto;
 import com.example.menunfl.entity.order.Order;
-import com.example.menunfl.entity.order.OrderItem;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public record OrderResponseDto(
         CustomerResponseDto customer,
         List<OrderItemResponseDto> items,
-        AddressResponseDto address
+        AddressResponseDto address,
+        BigDecimal total
 ) {
 
     public static OrderResponseDto fromEntity(Order order) {
@@ -19,7 +20,8 @@ public record OrderResponseDto(
                 order.getItems().stream()
                         .map(OrderItemResponseDto::fromEntity)
                         .toList(),
-                AddressResponseDto.fromEntity(order.getAddress())
+                AddressResponseDto.fromEntity(order.getAddress()),
+                order.getTotal()
         );
     }
 }

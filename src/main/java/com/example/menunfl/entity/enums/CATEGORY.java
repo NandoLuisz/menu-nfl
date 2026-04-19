@@ -7,6 +7,8 @@ public enum CATEGORY {
     VEGETABLE,
     SAUCES_AND_CONDIMENTS,
     DRINK,
+    JUICE,
+    FIZZY,
     SWEET,
     FROZEN,
     PACKAGING,

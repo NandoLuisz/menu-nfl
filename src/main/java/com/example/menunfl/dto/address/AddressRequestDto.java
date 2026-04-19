@@ -5,13 +5,12 @@ import com.example.menunfl.entity.address.STATES;
 import java.util.UUID;
 
 public record AddressRequestDto(
-        UUID idCustomer,
+        String customerEmail,
         String number,
         String street,
         String city,
-        STATES states,
+        STATES state,
         String zip,
-        String neighborhood,
         String complement
 ) {
 }
