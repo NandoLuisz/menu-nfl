@@ -7,6 +7,7 @@ import com.example.menunfl.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,24 +22,27 @@ public class ProductController {
         this.productService = productService;
     }
 
-    @PostMapping("add-product")
-    public ResponseEntity<ProductResponseDto> addProduct(@RequestBody ProductRequestDto product) {
-        ProductResponseDto response = productService.createProduct(product);
+    @PostMapping("create")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
+    public ResponseEntity<ProductResponseDto> create(@RequestBody ProductRequestDto product) {
+        ProductResponseDto response = productService.create(product);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
-    @GetMapping("list-all-products")
-    public ResponseEntity<List<ProductResponseDto>> getAll() {
-        return ResponseEntity.ok().body(productService.getAllProducts());
+    @GetMapping("find-all")
+    public ResponseEntity<List<ProductResponseDto>> findAll() {
+        return ResponseEntity.ok().body(productService.findAll());
     }
 
-    @PutMapping("update-product/{id}")
+    @PutMapping("update/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<String> update(@PathVariable Long id, @RequestBody ProductRequestDto product) {
         productService.updateProduct(id, product);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Product successfully updated.");
     }
 
-    @DeleteMapping("delete-product/{id}")
+    @DeleteMapping("delete/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         productService.deleteProduct(id);
         return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Product successfully deleted.");

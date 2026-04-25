@@ -1,7 +1,7 @@
 package com.example.menunfl.entity.order;
 
-import com.example.menunfl.entity.enums.STATUS;
 import com.example.menunfl.entity.address.Address;
+import com.example.menunfl.entity.enums.Status;
 import com.example.menunfl.entity.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -39,7 +39,7 @@ public class Order {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private STATUS status;
+    private Status status;
 
     @Column(nullable = false)
     private BigDecimal total = BigDecimal.ZERO;
@@ -61,7 +61,7 @@ public class Order {
     @PrePersist
     public void prePersist() {
         this.createdAt = LocalDateTime.now();
-        this.status = STATUS.PENDING;
+        this.status = Status.PENDING;
     }
 
     @PreUpdate

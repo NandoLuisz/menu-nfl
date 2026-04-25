@@ -1,6 +1,6 @@
 package com.example.menunfl.entity.enums;
 
-public enum STATUS {
+public enum Status {
     PENDING,
     CANCELED,
     DELIVERED

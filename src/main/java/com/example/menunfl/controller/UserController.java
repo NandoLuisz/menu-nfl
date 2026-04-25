@@ -33,6 +33,7 @@ public class UserController {
     }
 
     @GetMapping("/find-by-id/{id}")
+    @PreAuthorize("hasAuthority('SCOPE_ADMIN')")
     public ResponseEntity<UserResponseDto> findById(@PathVariable UUID id) {
         var user = userService.findById(id);
         return ResponseEntity.ok(UserResponseDto.fromEntity(user));

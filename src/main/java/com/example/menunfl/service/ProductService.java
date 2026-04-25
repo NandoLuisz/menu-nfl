@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class ProductService {
@@ -18,7 +19,7 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
-    public ProductResponseDto createProduct(ProductRequestDto data) {
+    public ProductResponseDto create(ProductRequestDto data) {
 
         if (productRepository.existsByNameIgnoreCase(data.name())) {
             throw new RuntimeException("Produto já existe");
@@ -37,33 +38,32 @@ public class ProductService {
             throw new RuntimeException("Product not found.");
         }
         product.setName(data.name());
-        product.setDescription(data.description());
         product.setPrice(data.price());
         product.setCategory(data.category());
         product.setImage(data.image());
         productRepository.save(product);
     }
 
-    public List<ProductResponseDto> getAllProducts() {
-        List<Product> products = productRepository.findAll();
-        List<ProductResponseDto> productResponseDtos = new ArrayList<>();
-        for (Product product : products) {
-            productResponseDtos.add(ProductResponseDto.fromEntity(product));
-        }
-        return productResponseDtos;
+    public List<ProductResponseDto> findAll(){
+        return productRepository.findAll().stream().map(ProductResponseDto::fromEntity).toList();
     }
 
     private Product toEntity(ProductRequestDto data) {
         Product product = new Product();
         product.setName(data.name());
-        product.setDescription(data.description());
         product.setPrice(data.price());
         product.setCategory(data.category());
         product.setImage(
-                data.image() != null ? data.image() : imageProductDefault()
+                !Objects.equals(data.image(), "") ? data.image() : imageProductDefault()
         );
         product.setActive(true);
-        product.setStock(0);
+        if(!data.stockControlled()) {
+            product.setStockControlled(false);
+            product.setStock(0);
+        }else{
+            product.setStockControlled(true);
+            product.setStock(data.stock());
+        }
         return product;
     }
 
@@ -76,11 +76,7 @@ public class ProductService {
     }
 
     public void deleteProduct(Long idProduct) {
-        var productFromDb = productRepository.findById(idProduct).orElse(null);
-        if (productFromDb == null) {
-            throw new RuntimeException("product not found");
-        }
-        productRepository.delete(productFromDb);
+        productRepository.deleteById(idProduct);
     }
 
     public Product getProduct(Long productId) {

@@ -1,6 +1,6 @@
 package com.example.menunfl.dto.product;
 
-import com.example.menunfl.entity.enums.CATEGORY;
+import com.example.menunfl.entity.enums.Category;
 import com.example.menunfl.entity.product.Product;
 
 import java.math.BigDecimal;
@@ -8,20 +8,22 @@ import java.math.BigDecimal;
 public record ProductResponseDto(
         Long id,
         String name,
-        String description,
         BigDecimal price,
-        CATEGORY category,
-        String image
+        Category category,
+        String image,
+        Integer stock,
+        boolean stockControlled
 ) {
 
     public static ProductResponseDto fromEntity(Product data) {
         return new ProductResponseDto(
                 data.getId(),
                 data.getName(),
-                data.getDescription(),
                 data.getPrice(),
                 data.getCategory(),
-                data.getImage()
+                data.getImage(),
+                data.getStock(),
+                data.isStockControlled()
         );
     }
 }

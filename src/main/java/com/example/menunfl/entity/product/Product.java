@@ -1,8 +1,7 @@
 package com.example.menunfl.entity.product;
 
-import com.example.menunfl.entity.enums.CATEGORY;
+import com.example.menunfl.entity.enums.Category;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -30,9 +29,6 @@ public class Product {
     @Column(nullable = false, length = 100, unique = true)
     private String name;
 
-    @Column(length = 500)
-    private String description;
-
     @NotNull
     @Positive
     @Column(nullable = false)
@@ -40,41 +36,74 @@ public class Product {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private CATEGORY category;
+    private Category category;
 
-    @Column(length = 255)
     private String image;
+
+    @Column(nullable = false)
+    private boolean stockControlled;
+
+    @Column(nullable = false)
+    private Integer stock = 0;
 
     @Column(nullable = false)
     private boolean active = true;
 
-    @Min(0)
-    @Column(nullable = false)
-    private Integer stock = 0;
-
-    @Column(updatable = false)
+    @Column(updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
+    @Column(nullable = false)
     private LocalDateTime updatedAt;
 
     @PrePersist
     public void prePersist() {
-        this.createdAt = LocalDateTime.now();
-        this.updatedAt = LocalDateTime.now();
+        LocalDateTime now = LocalDateTime.now();
+        this.createdAt = now;
+        this.updatedAt = now;
+        validateStockState();
     }
 
     @PreUpdate
     public void preUpdate() {
         this.updatedAt = LocalDateTime.now();
+        validateStockState();
     }
 
-    public void decreaseStock(int amount, CATEGORY category) {
-        if(category == CATEGORY.DRINK || category == CATEGORY.FAST_FOOD) {
+    private void validateStockState() {
+        // Garante consistência: se não controla estoque, estoque sempre 0
+        if (!this.stockControlled) {
+            this.stock = 0;
+        }
+
+        // Evita null (segurança extra)
+        if (this.stock == null) {
+            this.stock = 0;
+        }
+
+        // Evita valores negativos
+        if (this.stock < 0) {
+            throw new IllegalArgumentException("Estoque não pode ser negativo");
+        }
+    }
+
+    public void decreaseStock(int amount) {
+
+        if (!this.stockControlled) {
             return;
         }
+
+        if (amount <= 0) {
+            throw new IllegalArgumentException("Quantidade inválida");
+        }
+
         if (this.stock < amount) {
             throw new IllegalArgumentException("Estoque insuficiente");
         }
+
         this.stock -= amount;
+    }
+
+    public boolean hasStockControl() {
+        return this.stockControlled;
     }
 }

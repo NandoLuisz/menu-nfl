@@ -52,7 +52,7 @@ public class OrderController {
 
             order.addItem(orderItem);
 
-            product.decreaseStock(itemDto.quantity(), product.getCategory());
+            product.decreaseStock(itemDto.quantity());
         }
 
         order.calculateTotal();
