@@ -2,7 +2,7 @@ package com.example.menunfl.entity.order;
 
 import com.example.menunfl.entity.enums.STATUS;
 import com.example.menunfl.entity.address.Address;
-import com.example.menunfl.entity.customer.Customer;
+import com.example.menunfl.entity.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,8 +30,8 @@ public class Order {
     private List<OrderItem> items = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "customer_id", nullable = false)
-    private Customer customer;
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "address_id", nullable = false)

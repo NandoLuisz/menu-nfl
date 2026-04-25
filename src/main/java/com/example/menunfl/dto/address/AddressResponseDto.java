@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 
 public record AddressResponseDto(
         Long id,
-        String customer,
+        String user,
         String number,
         String street,
         String city,
@@ -17,7 +17,7 @@ public record AddressResponseDto(
     public static AddressResponseDto fromEntity(Address data) {
         return new AddressResponseDto(
                 data.getId(),
-                data.getCustomer().getName(),
+                data.getUser().getUsername(),
                 data.getNumber(),
                 data.getStreet(),
                 data.getCity(),

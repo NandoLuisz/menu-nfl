@@ -28,6 +28,6 @@ public class AddressService {
     }
 
     public List<Address> getAllAddressesById(UUID customerId) {
-        return addressRepository.findAllByCustomer_Id(customerId);
+        return addressRepository.findAllByUser_Id(customerId);
     }
 }

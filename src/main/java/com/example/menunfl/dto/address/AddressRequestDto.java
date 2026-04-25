@@ -5,7 +5,7 @@ import com.example.menunfl.entity.address.STATES;
 import java.util.UUID;
 
 public record AddressRequestDto(
-        String customerEmail,
+        String userEmail,
         String number,
         String street,
         String city,

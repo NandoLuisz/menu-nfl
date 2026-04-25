@@ -12,5 +12,5 @@ import java.util.UUID;
 @Repository
 public interface AddressRepository extends JpaRepository<Address, Long> {
 
-    List<Address> findAllByCustomer_Id(UUID customerId);
+    List<Address> findAllByUser_Id(UUID userId);
 }

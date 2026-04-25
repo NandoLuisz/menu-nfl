@@ -1,75 +1,84 @@
 package com.example.menunfl.controller;
 
-import com.example.menunfl.dto.authentication.CustomerResponseRegisterDto;
-import com.example.menunfl.dto.authentication.LoginDto;
-import com.example.menunfl.dto.authentication.LoginResponseDto;
-import com.example.menunfl.dto.authentication.RegisterRequestDto;
-import com.example.menunfl.entity.customer.Customer;
-import com.example.menunfl.entity.enums.CUSTOMER_ROLE;
-import com.example.menunfl.infra.security.TokenService;
-import com.example.menunfl.repository.CustomerRepository;
-import com.example.menunfl.service.CustomerService;
+import com.example.menunfl.dto.authentication.*;
+import com.example.menunfl.entity.role.Role;
+import com.example.menunfl.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.JwsHeader;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.IOException;
-import java.util.UUID;
+import java.time.Instant;
+import java.util.stream.Collectors;
 
 @RequestMapping("api/auth")
 @RestController
 public class AuthenticationController {
 
-    private final AuthenticationManager authenticationManager;
-    private final CustomerRepository customerRepository;
-    private final TokenService tokenService;
-    private final CustomerService customerService;
+    private final UserService userService;
+    private final JwtEncoder jwtEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public AuthenticationController(AuthenticationManager authenticationManager, CustomerRepository customerRepository, TokenService tokenService, CustomerService customerService) {
-        this.authenticationManager = authenticationManager;
-        this.customerRepository = customerRepository;
-        this.tokenService = tokenService;
-        this.customerService = customerService;
+    public AuthenticationController(UserService userService, JwtEncoder jwtEncoder, BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.userService = userService;
+        this.jwtEncoder = jwtEncoder;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
+    @PostMapping("/login")
+    public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest){
+        var user = userService.findByUsername(loginRequest.username());
 
-    @PostMapping("/login-customer")
-    public ResponseEntity<LoginResponseDto> loginUser(@RequestBody LoginDto data){
-        var customer = customerRepository.findByName(data.name());
-        if(customer == null) {
-            throw new RuntimeException("Customer not found");
+        if(user.isEmpty() || !user.get().isLoginCorrect(loginRequest, bCryptPasswordEncoder)) {
+            throw new BadCredentialsException("Incorrect username or password");
         }
 
-        Customer customerExist = customerRepository.getCustomerByName(customer.getUsername());
-        UUID id = customerExist.getId();
+        var now = Instant.now();
+        var expiresIn = 3600L;
 
-        try{
-            var usernamePassword = new UsernamePasswordAuthenticationToken(data.name(), data.password());
-            var auth = authenticationManager.authenticate(usernamePassword);
-            var token = tokenService.generateToken((Customer) auth.getPrincipal());
-            return ResponseEntity.ok(new LoginResponseDto(token, id, data.name()));
-        } catch (Exception error) {
-            throw new RuntimeException("Password Incorrect Format");
-        }
+        var scopes = user.get().getRoles()
+                .stream()
+                .map(Role::getName)
+                .collect(Collectors.joining(" "));
+
+        var claims = JwtClaimsSet.builder()
+                .issuer("menu-nfl")
+                .subject(user.get().getId().toString())
+                .issuedAt(now)
+                .expiresAt(now.plusSeconds(expiresIn))
+                .claim("scope", scopes)
+                .build();
+
+        var jwsHeader = JwsHeader.with(MacAlgorithm.HS256).build();
+
+        var jwtValue = jwtEncoder.encode(
+                JwtEncoderParameters.from(jwsHeader, claims)
+        ).getTokenValue();
+
+        return ResponseEntity.ok(new LoginResponse(jwtValue, expiresIn));
     }
 
-    @PostMapping("/register-customer")
-    public ResponseEntity<CustomerResponseRegisterDto> registerUser(@RequestBody RegisterRequestDto data) throws IOException {
-        if (customerService.findCustomerByName(data.name())) {
-            throw new RuntimeException("Customer already registered.");
+    @PostMapping("/register")
+    public ResponseEntity<Void> register(@RequestBody RegisterRequest data) throws IOException {
+        if (userService.findByUsername(data.username()).isPresent()) {
+            throw new RuntimeException("User already registered.");
         }
-        if (customerService.findCustomerByEmail(data.name())) {
+        if (userService.findByEmail(data.email()).isPresent()) {
             throw new RuntimeException("Email already registered.");
         }
 
-        Customer response = customerService.registerCustomer(data);
+        userService.register(data);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(CustomerResponseRegisterDto.from(response));
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

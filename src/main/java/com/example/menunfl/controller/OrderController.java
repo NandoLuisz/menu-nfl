@@ -3,12 +3,12 @@ package com.example.menunfl.controller;
 import com.example.menunfl.dto.order.OrderRequestDto;
 import com.example.menunfl.dto.order.OrderResponseDto;
 import com.example.menunfl.entity.address.Address;
-import com.example.menunfl.entity.customer.Customer;
 import com.example.menunfl.entity.order.Order;
 import com.example.menunfl.entity.order.OrderItem;
 import com.example.menunfl.entity.product.Product;
+import com.example.menunfl.entity.user.User;
 import com.example.menunfl.service.AddressService;
-import com.example.menunfl.service.CustomerService;
+import com.example.menunfl.service.UserService;
 import com.example.menunfl.service.OrderService;
 import com.example.menunfl.service.ProductService;
 import org.springframework.http.ResponseEntity;
@@ -17,31 +17,29 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping("api/order")
 public class OrderController {
     private final OrderService orderService;
     private final ProductService productService;
-    private final CustomerService customerService;
+    private final UserService userService;
     private final AddressService addressService;
 
-    public OrderController(OrderService orderService, ProductService productService, CustomerService customerService, AddressService addressService) {
+    public OrderController(OrderService orderService, ProductService productService, UserService userService, AddressService addressService) {
         this.orderService = orderService;
         this.productService = productService;
-        this.customerService = customerService;
+        this.userService = userService;
         this.addressService = addressService;
     }
 
     @PostMapping("place-order")
     public ResponseEntity<OrderResponseDto> placeOrder(@RequestBody OrderRequestDto data) {
-        Customer customer = customerService.getCustomerByEmail(data.customerEmail());
+        User user = userService.findByEmail(data.userEmail()).orElseThrow(() -> new RuntimeException("User with email " + data.userEmail() + " not found"));
 
-        Address address = addressService.getAllAddressesById(customer.getId()).getFirst();
+        Address address = addressService.getAllAddressesById(user.getId()).getFirst();
 
         Order order = new Order();
-        order.setCustomer(customer);
+        order.setUser(user);
         order.setAddress(address);
 
         for(var itemDto : data.orderItemsList()){
