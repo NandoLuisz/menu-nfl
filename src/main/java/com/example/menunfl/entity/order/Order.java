@@ -1,6 +1,7 @@
 package com.example.menunfl.entity.order;
 
 import com.example.menunfl.entity.address.Address;
+import com.example.menunfl.entity.comment.Comment;
 import com.example.menunfl.entity.enums.Status;
 import com.example.menunfl.entity.user.User;
 import jakarta.persistence.*;
@@ -43,6 +44,9 @@ public class Order {
 
     @Column(nullable = false)
     private BigDecimal total = BigDecimal.ZERO;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Comment> comments = new ArrayList<>();
 
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;

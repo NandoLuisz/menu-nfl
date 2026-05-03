@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST,"/api/order/place-order").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/address/add-address").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/address/{userId}/addresses").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/comment/create-comment").permitAll()
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf.disable())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
