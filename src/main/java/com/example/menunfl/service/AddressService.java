@@ -19,6 +19,7 @@ public class AddressService {
     public Optional<Address> getAddressById(Long addressId) {
         return addressRepository.findById(addressId);
     }
+
     public void saveNewAddress(Address address) {
         addressRepository.save(address);
     }

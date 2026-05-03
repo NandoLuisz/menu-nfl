@@ -4,10 +4,10 @@ import com.example.menunfl.dto.address.AddressRequestDto;
 import com.example.menunfl.dto.address.AddressResponseDto;
 import com.example.menunfl.entity.address.Address;
 import com.example.menunfl.entity.address.STATES;
-import com.example.menunfl.entity.user.User;
 import com.example.menunfl.service.AddressService;
 import com.example.menunfl.service.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,9 +24,9 @@ public class AddressController {
         this.userService = userService;
     }
 
-    @PostMapping("/user/add-address")
-    public ResponseEntity<AddressResponseDto> addAddress(@RequestBody AddressRequestDto data) {
-        User user = userService.findByEmail(data.userEmail()).orElseThrow(() -> new RuntimeException("User with email " + data.userEmail() + " not found"));
+    @PostMapping("/add-address")
+    public ResponseEntity<AddressResponseDto> addAddress(@RequestBody AddressRequestDto data, JwtAuthenticationToken token) {
+        var user = userService.findById(UUID.fromString(token.getName()));
         Address newAddress = new Address();
         newAddress.setNumber(data.number());
         newAddress.setStreet(data.street());
@@ -34,14 +34,17 @@ public class AddressController {
         newAddress.setState(STATES.valueOf(String.valueOf(data.state())));
         newAddress.setZip(data.zip());
         newAddress.setComplement(data.complement());
+
         user.addAddress(newAddress);
+
         newAddress.setUser(user);
+
         userService.save(user);
-        addressService.saveNewAddress(newAddress);
+
         return ResponseEntity.ok(AddressResponseDto.fromEntity(newAddress));
     }
 
-    @GetMapping("/user/{userId}/addresses")
+    @GetMapping("/{userId}/addresses")
     public ResponseEntity<List<AddressResponseDto>> getAllAddressesByUser(
             @PathVariable UUID userId) {
 

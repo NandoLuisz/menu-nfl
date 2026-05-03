@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public record OrderResponseDto(
-        UserResponseDto customer,
+        UserResponseDto user,
         List<OrderItemResponseDto> items,
         AddressResponseDto address,
         BigDecimal total
