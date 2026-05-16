@@ -1,7 +1,6 @@
 package com.example.menunfl.controller;
 
 import com.example.menunfl.dto.comment.CommentRequestDto;
-import com.example.menunfl.entity.comment.Comment;
 import com.example.menunfl.service.CommentService;
 import com.example.menunfl.service.UserService;
 import org.springframework.http.ResponseEntity;

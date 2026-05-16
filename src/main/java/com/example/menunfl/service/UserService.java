@@ -48,7 +48,6 @@ public class UserService {
         newUser.setPassword(encryptedPassword);
         newUser.setActive(true);
         newUser.setUsername(data.username());
-        newUser.setPhone(data.phone());
         userRepository.save(newUser);
     }
 

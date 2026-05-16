@@ -36,9 +36,10 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                .cors(cors -> {})
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST,"/api/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST,"/api/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/auth/sign-in").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/api/auth/sign-up").permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/product/find-all").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/order/place-order").permitAll()
                         .requestMatchers(HttpMethod.POST,"/api/address/add-address").permitAll()

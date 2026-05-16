@@ -2,6 +2,7 @@ package com.example.menunfl.controller;
 
 import com.example.menunfl.dto.authentication.*;
 import com.example.menunfl.entity.role.Role;
+import com.example.menunfl.exception.UserAlreadyExistsException;
 import com.example.menunfl.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,7 +36,7 @@ public class AuthenticationController {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
-    @PostMapping("/login")
+    @PostMapping("/sign-in")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest loginRequest){
         var user = userService.findByUsername(loginRequest.username());
 
@@ -68,13 +69,21 @@ public class AuthenticationController {
         return ResponseEntity.ok(new LoginResponse(jwtValue, expiresIn));
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody RegisterRequest data) throws IOException {
+    @PostMapping("/sign-up")
+    public ResponseEntity<Void> register(
+            @RequestBody RegisterRequest data
+    ) throws IOException {
+
         if (userService.findByUsername(data.username()).isPresent()) {
-            throw new RuntimeException("User already registered.");
+            throw new UserAlreadyExistsException(
+                    "User already registered."
+            );
         }
+
         if (userService.findByEmail(data.email()).isPresent()) {
-            throw new RuntimeException("Email already registered.");
+            throw new UserAlreadyExistsException(
+                    "Email already registered."
+            );
         }
 
         userService.register(data);
