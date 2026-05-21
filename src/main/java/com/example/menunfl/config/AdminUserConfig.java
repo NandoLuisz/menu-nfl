@@ -14,9 +14,9 @@ import java.util.Set;
 @Configuration
 public class AdminUserConfig implements CommandLineRunner {
 
-    private RoleRepository roleRepository;
-    private UserRepository userRepository;
-    private BCryptPasswordEncoder passwordEncoder;
+    private final RoleRepository roleRepository;
+    private final UserRepository userRepository;
+    private final BCryptPasswordEncoder passwordEncoder;
 
     public AdminUserConfig(RoleRepository roleRepository,
                            UserRepository userRepository,
@@ -55,6 +55,8 @@ public class AdminUserConfig implements CommandLineRunner {
                     user.setRoles(Set.of(roleAdmin, roleBasic));
                     user.setEmail("admin.default@gmail.com");
                     user.setPhone("85999998888");
+                    user.setActive(true);
+                    user.setProfile("https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg");
                     userRepository.save(user);
                 }
         );

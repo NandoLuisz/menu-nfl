@@ -48,6 +48,7 @@ public class UserService {
         newUser.setPassword(encryptedPassword);
         newUser.setActive(true);
         newUser.setUsername(data.username());
+        newUser.setProfile("https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg");
         userRepository.save(newUser);
     }
 

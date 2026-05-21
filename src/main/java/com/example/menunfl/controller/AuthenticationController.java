@@ -66,7 +66,7 @@ public class AuthenticationController {
                 JwtEncoderParameters.from(jwsHeader, claims)
         ).getTokenValue();
 
-        return ResponseEntity.ok(new LoginResponse(jwtValue, expiresIn));
+        return ResponseEntity.ok(new LoginResponse(jwtValue, expiresIn, user.get().getUsername(), user.get().getProfile()));
     }
 
     @PostMapping("/sign-up")

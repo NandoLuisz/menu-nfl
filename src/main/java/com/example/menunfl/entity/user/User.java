@@ -46,6 +46,9 @@ public class User {
     @Column(length = 20)
     private String phone;
 
+    @Column
+    private String profile;
+
     @Past
     private LocalDate birthday;
 
